@@ -11,7 +11,7 @@
  Target Server Version : 80016
  File Encoding         : 65001
 
- Date: 03/09/2021 14:15:15
+ Date: 31/03/2022 13:30:01
 */
 
 SET NAMES utf8mb4;
@@ -32,13 +32,32 @@ CREATE TABLE `sys_captcha` (
 -- Records of sys_captcha
 -- ----------------------------
 BEGIN;
+INSERT INTO `sys_captcha` VALUES ('05a2697d-a3fb-4077-81f1-d9f97ffb3797', '4x342', '2021-09-05 20:37:20');
+INSERT INTO `sys_captcha` VALUES ('0fc72295-16a6-4613-84b7-9d0829e0299a', 'xn257', '2021-09-30 23:13:33');
+INSERT INTO `sys_captcha` VALUES ('12a7c2fc-78a6-43b9-8e50-844748120071', 'g85xn', '2022-03-30 16:23:14');
+INSERT INTO `sys_captcha` VALUES ('16269b4e-0621-4403-8ca7-d4ddf9d45488', '6xw64', '2022-03-30 17:54:53');
+INSERT INTO `sys_captcha` VALUES ('180e8700-9329-410c-8fb2-8e5ab7294c3c', '45388', '2022-03-30 17:56:50');
+INSERT INTO `sys_captcha` VALUES ('193da0b9-c667-4b32-87b0-cb6058f7ee72', '2na3m', '2022-03-30 13:49:55');
+INSERT INTO `sys_captcha` VALUES ('1a81cd1a-2252-46c8-88d5-6454af04df4c', 'd4pm3', '2021-09-30 22:00:38');
 INSERT INTO `sys_captcha` VALUES ('2de7d031-470b-46cf-8fc5-9f23a4929157', 'yg3dg', '2021-08-11 16:36:06');
 INSERT INTO `sys_captcha` VALUES ('40868cbf-3e6d-4c2a-86d9-4364912621ac', 'nw6aa', '2021-08-11 17:05:32');
+INSERT INTO `sys_captcha` VALUES ('64028dec-bc56-44c3-8167-a60f475d622c', 'wcp4w', '2021-09-30 23:13:12');
+INSERT INTO `sys_captcha` VALUES ('7fba8cdf-db89-48fd-8a73-cb6c4ddc84bb', 'm5en7', '2021-09-30 23:13:11');
+INSERT INTO `sys_captcha` VALUES ('8c991797-962d-4d1d-8e1b-203962edf99e', 'ey8xp', '2021-09-30 23:13:10');
 INSERT INTO `sys_captcha` VALUES ('8caa5aae-f2d4-4041-834b-12600d919793', 'ffeg3', '2021-08-11 17:00:06');
+INSERT INTO `sys_captcha` VALUES ('8f759d88-ec2c-4eef-8246-2cfd740a3376', 'x7agd', '2022-03-30 16:05:08');
 INSERT INTO `sys_captcha` VALUES ('942e5505-ace7-4353-82ca-63eea304c73f', '3654n', '2021-08-11 16:33:27');
 INSERT INTO `sys_captcha` VALUES ('a086c670-fc68-4b4b-8e66-f24565415861', 'e2pep', '2021-08-11 16:34:36');
+INSERT INTO `sys_captcha` VALUES ('abcd', '6pen7', '2022-03-20 17:16:56');
+INSERT INTO `sys_captcha` VALUES ('abcd1', '6537m', '2022-03-20 17:21:33');
+INSERT INTO `sys_captcha` VALUES ('abcddef', 'mnnw5', '2022-03-20 17:54:33');
+INSERT INTO `sys_captcha` VALUES ('abcddefd', 'a4ybx', '2022-03-20 18:07:27');
+INSERT INTO `sys_captcha` VALUES ('abcddefdb', 'mf2fn', '2022-03-20 18:08:39');
+INSERT INTO `sys_captcha` VALUES ('af45fdde-8155-40bf-8e84-b27925d460f9', '65n3g', '2022-03-30 15:44:29');
 INSERT INTO `sys_captcha` VALUES ('bb694936-3db3-4dcf-8283-38ccaecd1b8a', '63n54', '2021-08-11 17:07:11');
+INSERT INTO `sys_captcha` VALUES ('bf01cb28-3874-417b-89b9-44824ec4c6fa', 'y26px', '2021-09-30 23:12:13');
 INSERT INTO `sys_captcha` VALUES ('c8a2f4be-8f4c-4824-8f2f-289c184f0b40', 'x5fby', '2021-08-11 16:14:25');
+INSERT INTO `sys_captcha` VALUES ('f8fd9282-432f-453d-828b-c0f5d94c6770', 'x35pp', '2022-03-30 00:16:38');
 COMMIT;
 
 -- ----------------------------
@@ -92,7 +111,7 @@ CREATE TABLE `sys_menu` (
   `icon` varchar(50) DEFAULT NULL COMMENT '菜单图标',
   `order_num` int(11) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
 
 -- ----------------------------
 -- Records of sys_menu
@@ -132,6 +151,21 @@ INSERT INTO `sys_menu` VALUES (37, 36, '查看', NULL, 'admin:user:list,admin:us
 INSERT INTO `sys_menu` VALUES (38, 36, '新增', NULL, 'admin:user:save', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (39, 36, '修改', NULL, 'admin:user:update', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (40, 36, '删除', NULL, 'admin:user:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (41, 1, '用户列表', 'binancegame/account', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (42, 41, '查看', NULL, 'binancegame:account:list,binancegame:account:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (43, 41, '新增', NULL, 'binancegame:account:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (44, 41, '修改', NULL, 'binancegame:account:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (45, 41, '删除', NULL, 'binancegame:account:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (46, 1, '用户提现', 'binancegame/accountwithdrawal', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (47, 46, '查看', NULL, 'binancegame:accountwithdrawal:list,binancegame:accountwithdrawal:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (48, 46, '新增', NULL, 'binancegame:accountwithdrawal:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (49, 46, '修改', NULL, 'binancegame:accountwithdrawal:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (50, 46, '删除', NULL, 'binancegame:accountwithdrawal:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (51, 1, '用户充值地址', 'binancegame/accountrechargeaddress', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (52, 51, '查看', NULL, 'binancegame:accountrechargeaddress:list,binancegame:accountrechargeaddress:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (53, 51, '新增', NULL, 'binancegame:accountrechargeaddress:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (54, 51, '修改', NULL, 'binancegame:accountrechargeaddress:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (55, 51, '删除', NULL, 'binancegame:accountrechargeaddress:delete', 2, NULL, 6);
 COMMIT;
 
 -- ----------------------------
@@ -222,28 +256,7 @@ CREATE TABLE `sys_user_token` (
 -- Records of sys_user_token
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_token` VALUES (1, '923f9882f9414cff1ce96c6ca9135b41', '2021-08-27 03:36:08', '2021-08-26 15:36:08');
-COMMIT;
-
--- ----------------------------
--- Table structure for tb_user
--- ----------------------------
-DROP TABLE IF EXISTS `tb_user`;
-CREATE TABLE `tb_user` (
-  `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL COMMENT '用户名',
-  `mobile` varchar(20) NOT NULL COMMENT '手机号',
-  `password` varchar(64) DEFAULT NULL COMMENT '密码',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户';
-
--- ----------------------------
--- Records of tb_user
--- ----------------------------
-BEGIN;
-INSERT INTO `tb_user` VALUES (1, 'mark', '13612345678', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', '2017-03-23 22:37:41');
+INSERT INTO `sys_user_token` VALUES (1, 'c71985a7b7d8e3822025b176d4200df2', '2022-03-31 04:48:14', '2022-03-30 16:48:14');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
