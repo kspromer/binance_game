@@ -1,0 +1,52 @@
+version: '3'
+services:
+  binance:
+    container_name: binance
+    build:
+      context: ./binance_game/admin/
+      dockerfile: Dockerfile
+    image: binance:1.0.0
+    env_file:
+      - ./app.env
+    volumes:
+      - /home/webfile:/home/webfile
+    ports:
+      - "8880:8880"
+    restart: always
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.12
+    environment:
+      MYSQL_ROOT_PASSWORD: SEW2018!
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - /home/mysql:/var/lib/mysql
+      - /var/lib/mysql-files:/var/lib/mysql-files
+      - /etc/mysql:/etc/mysql
+      - /etc/localtime:/etc/localtime
+    ports:
+      - "3306:3306"
+    restart: always
+    command: --lower_case_table_names=1
+  redis:
+    image: redis
+    container_name: redis
+    privileged: true
+    command: redis-server --requirepass Jz123456
+    volumes:
+      - /home/redis:/data
+    ports:
+      - "6379:6379"
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
+    volumes:
+      - /home/webfile/wk/file/:/data
