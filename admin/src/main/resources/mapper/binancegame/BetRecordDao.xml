@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.binancegame.dao.BetRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.binancegame.entity.BetRecordEntity" id="betRecordMap">
+        <result property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="money" column="money"/>
+        <result property="point" column="point"/>
+        <result property="issueNo" column="issue_no"/>
+        <result property="result" column="result"/>
+        <result property="createTime" column="create_time"/>
+        <result property="state" column="state"/>
+        <result property="symbol" column="symbol"/>
+        <result property="odds" column="odds"/>
+    </resultMap>
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.app.vo.AppBetRecordListIssueVO" id="listPageVO">
+        <result property="issueNo" column="issue_no"/>
+        <result property="close" column="close"/>
+        <result property="symbol" column="symbol"/>
+        <collection property="appBetRecordListVOS" ofType="io.renren.modules.app.vo.AppBetRecordListVO" column="{issue_no=issue_no}" select="getValueIssueNo">
+            <id column="id" property="id" />
+            <result column="issue_no" property="issueNo" />
+            <result column="money" property="money" />
+            <result column="point" property="point" />
+            <result column="result" property="result" />
+            <result column="symbol" property="symbol" />
+        </collection>
+    </resultMap>
+
+    <select id="listPage" resultMap="listPageVO">
+        SELECT
+            b.issue_no,
+            b.symbol,
+            k.`close`
+        FROM
+            bet_record b join klines k on k.issue_no = b.issue_no
+        <where>
+            <if test="dto.accountId != '' and dto.AccountId != null">
+                AND b.account_id = #{dto.accountId}
+            </if>
+        </where>
+        GROUP BY
+            b.issue_no
+        ORDER BY
+            b.id DESC
+    </select>
+
+    <select id="getValueIssueNo" resultType="io.renren.modules.app.vo.AppBetRecordListVO">
+        SELECT b.* from bet_record b where b.issue_no = #{issue_no}
+    </select>
+<!--                b.money,
+            b.result,
+            b.id,
+            b.symbol,
+            b.point,
+            b.account_id-->
+<!--JOIN bet_record b ON b.issue_no = k.issue_no-->
+
+</mapper>

@@ -1,0 +1,10 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea
+*.iml
+admin/target
+admin_vue/node_modules
+Binance_Futures_Java-master/target
+Binance_Futures_Java-master/logs
+admin_generator/target
+logs
+
