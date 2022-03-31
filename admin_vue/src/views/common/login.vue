@@ -3,8 +3,8 @@
     <div class="site-content__wrapper">
       <div class="site-content">
         <div class="brand-info">
-          <h2 class="brand-info__text">互联网医院</h2>
-          <p class="brand-info__intro">互联网医院管理后台系统</p>
+          <h2 class="brand-info__text">BINANME_GAME</h2>
+          <p class="brand-info__intro">BINANME_GAME管理后台系统</p>
         </div>
         <div class="login-main">
           <h3 class="login-title">登录</h3>

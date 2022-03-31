@@ -85,8 +85,8 @@ mybatis-plus:
     call-setters-on-nulls: true
 
 swagger:
-  title: 互联网医院
-  description: 互联网医院
+  title: BINANME_GAME
+  description: BINANME_GAME
   termsOfServiceUrl: 127.0.0.1:8080
   version: 1.0
   contact: 刘羽禅
