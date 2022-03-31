@@ -68,5 +68,10 @@ public interface AccountRechargeAddressService extends IService<AccountRechargeA
      * @return
      */
     List<AccountRechargeAddressGetAddressVO> getAddress(AccountRechargeAddressGetAddressDto dto);
+
+    /**
+     * 充值USDT扫描
+     */
+    void rechargeTask();
 }
 

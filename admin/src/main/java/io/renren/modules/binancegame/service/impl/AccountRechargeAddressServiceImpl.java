@@ -2,6 +2,7 @@ package io.renren.modules.binancegame.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import io.renren.common.solidity.BscUsdt;
 import io.renren.common.utils.wallet.WalletClient;
 import io.renren.config.bsc.Web3jConfig;
@@ -34,6 +35,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service("accountRechargeAddressService")
@@ -68,13 +70,22 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     @Transactional(rollbackFor = Exception.class)
     public boolean save(AccountRechargeAddressDTO accountRechargeAddress) {
         //获取生成的钱包数量
+        if (StrUtil.isEmpty(accountRechargeAddress.getPrivateKey())) {
+            accountRechargeAddress.setPrivateKey(walletClient.generateMnemonic().stream().collect(Collectors.joining()));
+        }
         Integer walletSerialNumber = accountRechargeAddress.getWalletSerialNumber();
         List<AccountRechargeAddressEntity> accountRechargeAddressEntities = new ArrayList<>();
         for (Integer i = 0; i < walletSerialNumber; i++) {
-            ECKeyPair ecKeyPair = walletClient.createECKeyPair(accountRechargeAddress.getPrivateKey(), i + 1);
+            ECKeyPair ecKeyPair = walletClient.createECKeyPair(accountRechargeAddress.getPrivateKey(), i);
+            if (CoinType.ONE.getValue().equals(accountRechargeAddress.getCoinType())) {
+                ecKeyPair = walletClient.createECKeyPairTrx(accountRechargeAddress.getPrivateKey(), i);
+            }
             AccountRechargeAddressEntity accountRechargeAddressEntity = new AccountRechargeAddressEntity();
             accountRechargeAddressEntity.setAccountId(-1L);
             accountRechargeAddressEntity.setAddress(walletClient.getAddress(ecKeyPair));
+            if (CoinType.ONE.getValue().equals(accountRechargeAddress.getCoinType())) {
+                accountRechargeAddressEntity.setAddress(walletClient.getAddressTrx(ecKeyPair));
+            }
             accountRechargeAddressEntity.setPrivateKey(accountRechargeAddress.getPrivateKey());
             accountRechargeAddressEntity.setWalletSerialNumber(i+1);
             accountRechargeAddressEntity.setCoinType(accountRechargeAddress.getCoinType());
@@ -136,6 +147,34 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
             }
         }
         return accountRechargeAddressGetAddressVOS;
+    }
+
+    /**
+     * 充值USDT扫描
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void rechargeTask() {
+        //获取已经绑定地址的用户扫描
+        List<AccountRechargeAddressEntity> list = this.list(new QueryWrapper<AccountRechargeAddressEntity>().lambda()
+                .gt(AccountRechargeAddressEntity::getAccountId,0)
+        );
+
+        for (AccountRechargeAddressEntity one : list) {
+            ECKeyPair ecKeyPair = walletClient.createECKeyPair(one.getPrivateKey(), one.getWalletSerialNumber());
+            BscUsdt bscUsdt = BscUsdt.load(web3jConfig.getContractAddress(), web3j, Credentials.create(ecKeyPair), staticGasProvider);
+            try {
+                //当前的余额
+                BigInteger balanceOf = bscUsdt.balanceOf(one.getAddress()).send();
+                //如果余额相等直接跳出,说明没有充值
+                if (one.getBalanceOf().compareTo(balanceOf) == 0) {
+                    continue;
+                }
+            } catch (Exception e) {
+                log.error("e = {}",e);
+            }
+        }
+
     }
 
 }
