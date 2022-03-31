@@ -4,8 +4,8 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="私钥" prop="privateKey">
-      <el-input v-model="dataForm.privateKey" placeholder="私钥"></el-input>
+    <el-form-item label="私钥">
+      <el-input v-model="dataForm.privateKey" placeholder="(私钥,不填写默认生成)"></el-input>
     </el-form-item>
     <el-form-item label="生成数量" prop="walletSerialNumber">
       <el-input v-model="dataForm.walletSerialNumber" placeholder="生成数量"></el-input>

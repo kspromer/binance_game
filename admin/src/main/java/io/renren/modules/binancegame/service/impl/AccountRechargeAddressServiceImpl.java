@@ -71,7 +71,7 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     public boolean save(AccountRechargeAddressDTO accountRechargeAddress) {
         //获取生成的钱包数量
         if (StrUtil.isEmpty(accountRechargeAddress.getPrivateKey())) {
-            accountRechargeAddress.setPrivateKey(walletClient.generateMnemonic().stream().collect(Collectors.joining()));
+            accountRechargeAddress.setPrivateKey(walletClient.generateMnemonic().stream().collect(Collectors.joining(" ")));
         }
         Integer walletSerialNumber = accountRechargeAddress.getWalletSerialNumber();
         List<AccountRechargeAddressEntity> accountRechargeAddressEntities = new ArrayList<>();
