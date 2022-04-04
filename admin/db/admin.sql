@@ -11,7 +11,7 @@
  Target Server Version : 80016
  File Encoding         : 65001
 
- Date: 31/03/2022 13:30:01
+ Date: 04/04/2022 23:26:39
 */
 
 SET NAMES utf8mb4;
@@ -42,6 +42,7 @@ INSERT INTO `sys_captcha` VALUES ('1a81cd1a-2252-46c8-88d5-6454af04df4c', 'd4pm3
 INSERT INTO `sys_captcha` VALUES ('2de7d031-470b-46cf-8fc5-9f23a4929157', 'yg3dg', '2021-08-11 16:36:06');
 INSERT INTO `sys_captcha` VALUES ('40868cbf-3e6d-4c2a-86d9-4364912621ac', 'nw6aa', '2021-08-11 17:05:32');
 INSERT INTO `sys_captcha` VALUES ('64028dec-bc56-44c3-8167-a60f475d622c', 'wcp4w', '2021-09-30 23:13:12');
+INSERT INTO `sys_captcha` VALUES ('77933c7d-0898-44d4-8fff-b910920b6c95', 'gmypx', '2022-03-31 18:14:25');
 INSERT INTO `sys_captcha` VALUES ('7fba8cdf-db89-48fd-8a73-cb6c4ddc84bb', 'm5en7', '2021-09-30 23:13:11');
 INSERT INTO `sys_captcha` VALUES ('8c991797-962d-4d1d-8e1b-203962edf99e', 'ey8xp', '2021-09-30 23:13:10');
 INSERT INTO `sys_captcha` VALUES ('8caa5aae-f2d4-4041-834b-12600d919793', 'ffeg3', '2021-08-11 17:00:06');
@@ -111,7 +112,7 @@ CREATE TABLE `sys_menu` (
   `icon` varchar(50) DEFAULT NULL COMMENT '菜单图标',
   `order_num` int(11) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
 
 -- ----------------------------
 -- Records of sys_menu
@@ -166,6 +167,11 @@ INSERT INTO `sys_menu` VALUES (52, 51, '查看', NULL, 'binancegame:accountrecha
 INSERT INTO `sys_menu` VALUES (53, 51, '新增', NULL, 'binancegame:accountrechargeaddress:save', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (54, 51, '修改', NULL, 'binancegame:accountrechargeaddress:update', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (55, 51, '删除', NULL, 'binancegame:accountrechargeaddress:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (56, 1, '分佣配置', 'binancegame/agentcommission', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (57, 56, '查看', NULL, 'binancegame:agentcommission:list,binancegame:agentcommission:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (58, 56, '新增', NULL, 'binancegame:agentcommission:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (59, 56, '修改', NULL, 'binancegame:agentcommission:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (60, 56, '删除', NULL, 'binancegame:agentcommission:delete', 2, NULL, 6);
 COMMIT;
 
 -- ----------------------------
@@ -256,7 +262,7 @@ CREATE TABLE `sys_user_token` (
 -- Records of sys_user_token
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_token` VALUES (1, 'c71985a7b7d8e3822025b176d4200df2', '2022-03-31 04:48:14', '2022-03-30 16:48:14');
+INSERT INTO `sys_user_token` VALUES (1, 'fd1cfaa49b8582a38a818dfdd07b6d3b', '2022-04-05 06:18:11', '2022-04-04 18:18:11');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
