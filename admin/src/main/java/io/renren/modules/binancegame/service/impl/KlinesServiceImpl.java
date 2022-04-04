@@ -15,12 +15,16 @@ import io.renren.modules.app.vo.AppKlinesCurrentIssueNoVO;
 import io.renren.modules.binancegame.entity.AccountEntity;
 import io.renren.modules.binancegame.entity.BetRecordEntity;
 import io.renren.modules.binancegame.enums.KlinesState;
+import io.renren.modules.binancegame.enums.MessageType;
+import io.renren.modules.binancegame.enums.MoneyChangeType;
+import io.renren.modules.binancegame.event.MoneyChangeMessageEvent;
 import io.renren.modules.binancegame.service.AccountService;
 import io.renren.modules.binancegame.service.BetRecordService;
 import io.renren.modules.binancegame.vo.AccountVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -60,6 +64,8 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
     private AccountService accountService;
     @Autowired
     private Cache<String, AppKlinesCurrentIssueNoVO> cache;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public PageUtils<KlinesVO> queryPage(KlinesDTO klines) {
@@ -146,9 +152,9 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
             accountIdBetRecordEntities.forEach((accountId,entities) -> {
                 //获取用户信息
                 AccountVO accountVO = accountService.getById(accountId);
-                AccountEntity updateAccountEntity = new AccountEntity();
-                updateAccountEntity.setId(accountId);
-                BigDecimal beforeMoney = accountVO.getMoney();
+//                AccountEntity updateAccountEntity = new AccountEntity();
+//                updateAccountEntity.setId(accountId);
+                BigDecimal money = BigDecimal.ZERO;
                 for (BetRecordEntity betRecordEntity : entities) {
                     BetRecordEntity update = new BetRecordEntity();
                     update.setId(betRecordEntity.getId());
@@ -161,18 +167,21 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
                     }
                     BigDecimal betRecordResult = betRecordEntity.getMoney().multiply(betRecordEntity.getOdds());
                     update.setResult(betRecordResult);
-                    beforeMoney = beforeMoney.add(update.getResult());
+                    money = money.add(update.getResult());
                     updateBetRecordEntities.add(update);
                 }
-                updateAccountEntity.setMoney(beforeMoney);
-                updateAccountEntitys.add(updateAccountEntity);
+                MoneyChangeMessageEvent moneyChangeMessageEvent = new MoneyChangeMessageEvent(this);
+                moneyChangeMessageEvent.setAccountId(accountId);
+                moneyChangeMessageEvent.setMoney(money);
+                moneyChangeMessageEvent.setMoneyChangeType(MoneyChangeType.TWO);
+                moneyChangeMessageEvent.setAccountVO(accountVO);
+                eventPublisher.publishEvent(moneyChangeMessageEvent);
             });
+
             //修改所有订单
             if (CollUtil.isNotEmpty(betRecordEntities)) {
                 //修改所有的单子
                 betRecordService.updateBatchById(updateBetRecordEntities);
-                //所有的用户信息
-                accountService.updateBatchById(updateAccountEntitys);
             }
         }
     }

@@ -12,12 +12,16 @@ import io.renren.modules.app.vo.AppBetRecordListVO;
 import io.renren.modules.app.vo.AppKlinesCurrentIssueNoVO;
 import io.renren.modules.binancegame.entity.AccountEntity;
 import io.renren.modules.binancegame.entity.BetConfigEntity;
+import io.renren.modules.binancegame.enums.MessageType;
+import io.renren.modules.binancegame.enums.MoneyChangeType;
+import io.renren.modules.binancegame.event.MoneyChangeMessageEvent;
 import io.renren.modules.binancegame.service.AccountService;
 import io.renren.modules.binancegame.service.BetConfigService;
 import io.renren.modules.binancegame.service.KlinesService;
 import io.renren.modules.binancegame.vo.AccountVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -53,6 +57,8 @@ public class BetRecordServiceImpl extends ServiceImpl<BetRecordDao, BetRecordEnt
     private AccountService accountService;
     @Autowired
     private KlinesService klinesService;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public PageUtils<BetRecordVO> queryPage(BetRecordDTO betRecord) {
@@ -116,12 +122,18 @@ public class BetRecordServiceImpl extends ServiceImpl<BetRecordDao, BetRecordEnt
         betRecordEntity.setOdds(pointBetConfigEntity.getOdds());
         this.save(betRecordEntity);
         //修改用户余额
-        BigDecimal beforeMoney = accountVO.getMoney();
-        BigDecimal afterMoney = beforeMoney.subtract(betRecordEntity.getMoney());
-        AccountEntity accountEntity = new AccountEntity();
-        accountEntity.setId(accountVO.getId());
-        accountEntity.setMoney(afterMoney);
-        accountService.updateById(accountEntity);
+//        BigDecimal beforeMoney = accountVO.getMoney();
+//        BigDecimal afterMoney = beforeMoney.subtract(betRecordEntity.getMoney());
+//        AccountEntity accountEntity = new AccountEntity();
+//        accountEntity.setId(accountVO.getId());
+//        accountEntity.setMoney(afterMoney);
+//        accountService.updateById(accountEntity);
+        MoneyChangeMessageEvent moneyChangeMessageEvent = new MoneyChangeMessageEvent(this);
+        moneyChangeMessageEvent.setAccountId(dto.getAccountId());
+        moneyChangeMessageEvent.setMoney(betRecordEntity.getMoney().multiply(BigDecimal.valueOf(-1)));
+        moneyChangeMessageEvent.setMoneyChangeType(MoneyChangeType.THREE);
+        moneyChangeMessageEvent.setAccountVO(accountVO);
+        eventPublisher.publishEvent(moneyChangeMessageEvent);
     }
 
     @Override
