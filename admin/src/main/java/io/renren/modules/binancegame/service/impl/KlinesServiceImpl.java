@@ -13,12 +13,15 @@ import io.renren.common.utils.Constant;
 import io.renren.datasources.annotation.BinanceGame;
 import io.renren.modules.app.vo.AppKlinesCurrentIssueNoVO;
 import io.renren.modules.binancegame.entity.AccountEntity;
+import io.renren.modules.binancegame.entity.AgentCommissionEntity;
 import io.renren.modules.binancegame.entity.BetRecordEntity;
+import io.renren.modules.binancegame.enums.AgentCommissionId;
 import io.renren.modules.binancegame.enums.KlinesState;
 import io.renren.modules.binancegame.enums.MessageType;
 import io.renren.modules.binancegame.enums.MoneyChangeType;
 import io.renren.modules.binancegame.event.MoneyChangeMessageEvent;
 import io.renren.modules.binancegame.service.AccountService;
+import io.renren.modules.binancegame.service.AgentCommissionService;
 import io.renren.modules.binancegame.service.BetRecordService;
 import io.renren.modules.binancegame.vo.AccountVO;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +69,8 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
     private Cache<String, AppKlinesCurrentIssueNoVO> cache;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private AgentCommissionService agentCommissionService;
 
     @Override
     public PageUtils<KlinesVO> queryPage(KlinesDTO klines) {
@@ -183,6 +188,80 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
                 //修改所有的单子
                 betRecordService.updateBatchById(updateBetRecordEntities);
             }
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void agentSettlement() {
+        List<KlinesEntity> list = this.list(new QueryWrapper<KlinesEntity>().lambda()
+                .eq(KlinesEntity::getState,KlinesState.TWO.getKey())
+        );
+        if (CollUtil.isEmpty(list)) {
+            return;
+        }
+        //获取分佣配置
+        AgentCommissionEntity agentCommissionEntity1 = agentCommissionService.getById(AgentCommissionId.ONE.getKey());
+        AgentCommissionEntity agentCommissionEntity2 = agentCommissionService.getById(AgentCommissionId.TWO.getKey());
+        if (ObjectUtil.isNull(agentCommissionEntity1) || ObjectUtil.isNull(agentCommissionEntity2)) {
+            return;
+        }
+        //所有期号 未代理结算
+        for (KlinesEntity klinesEntity : list) {
+            //修改为已经代理结算
+            KlinesEntity klinesDTO = new KlinesEntity();
+            klinesDTO.setId(klinesEntity.getId());
+            klinesDTO.setState(KlinesState.THREE.getKey());
+            this.updateById(klinesDTO);
+
+            //获取所有投注
+            List<BetRecordEntity> betRecordEntities = betRecordService.list(new QueryWrapper<BetRecordEntity>().lambda()
+                    .eq(BetRecordEntity::getIssueNo,klinesEntity.getIssueNo())
+            );
+            //获取点数
+            String result = klinesDTO.getResult();
+            //用户和投注记录的map
+            Map<Long, List<BetRecordEntity>> accountIdBetRecordEntities = betRecordEntities.stream().collect(Collectors.groupingBy(BetRecordEntity::getAccountId));
+            accountIdBetRecordEntities.forEach((accountId,entities) -> {
+                //获取用户信息
+                AccountVO accountVO = accountService.getById(accountId);
+                //获取流水
+                BigDecimal money = BigDecimal.ZERO;
+                for (BetRecordEntity betRecordEntity : entities) {
+                    //如果相等不结算
+                    if (betRecordEntity.getPoint().equals(result)) {
+                        continue;
+                    }
+                    money = money.add(betRecordEntity.getMoney());
+                }
+                if (ObjectUtil.isNull(accountVO)) {
+                    return;
+                }
+                //获取上级代理
+                AccountVO accountVOUpper = accountService.getById(accountVO.getUpper());
+                if (ObjectUtil.isNull(accountVOUpper)) {
+                    return;
+                }
+                BigDecimal moneyUpper = agentCommissionEntity1.getProportion().multiply(money);
+                MoneyChangeMessageEvent moneyChangeMessageEvent = new MoneyChangeMessageEvent(this);
+                moneyChangeMessageEvent.setAccountId(accountVOUpper.getId());
+                moneyChangeMessageEvent.setMoney(moneyUpper);
+                moneyChangeMessageEvent.setMoneyChangeType(MoneyChangeType.FOUR);
+                moneyChangeMessageEvent.setAccountVO(accountVOUpper);
+                eventPublisher.publishEvent(moneyChangeMessageEvent);
+                //获取上上级代理
+                AccountVO accountVOUpperUpper = accountService.getById(accountVOUpper.getUpper());
+                if (ObjectUtil.isNull(accountVOUpperUpper)) {
+                    return;
+                }
+                BigDecimal moneyUpperUpper = agentCommissionEntity2.getProportion().multiply(money);
+                MoneyChangeMessageEvent moneyChangeMessageEvent2 = new MoneyChangeMessageEvent(this);
+                moneyChangeMessageEvent2.setAccountId(accountVOUpperUpper.getId());
+                moneyChangeMessageEvent2.setMoney(moneyUpperUpper);
+                moneyChangeMessageEvent2.setMoneyChangeType(MoneyChangeType.FOUR);
+                moneyChangeMessageEvent2.setAccountVO(accountVOUpperUpper);
+                eventPublisher.publishEvent(moneyChangeMessageEvent2);
+            });
         }
     }
 

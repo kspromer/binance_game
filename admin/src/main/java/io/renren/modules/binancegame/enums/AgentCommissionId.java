@@ -13,12 +13,11 @@ import lombok.Getter;
  * @date 2022-03-22 11:26:37
  */
 @Getter
-public enum KlinesState implements BaseEnum {
+public enum AgentCommissionId implements BaseEnum {
 
-    ZERO(0,"投注中"),
-    ONE(1,"停止投注"),
-    TWO(2,"结算完成"),
-    THREE(3,"代理结算完成"),
+
+    ONE(1,"上级代理"),
+    TWO(2,"上上级代理"),
     ;
 
     @EnumValue
@@ -26,7 +25,7 @@ public enum KlinesState implements BaseEnum {
     private Integer key;
     private String value;
 
-    KlinesState(Integer key, String value) {
+    AgentCommissionId(Integer key, String value) {
         this.key = key;
         this.value = value;
     }

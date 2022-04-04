@@ -23,15 +23,27 @@ public class SettlementTask {
 
     /**
      * 30s执行一次
+     * 用户结算
      */
     @Scheduled(cron="2/30 * * * * ?") //每分钟执行一次
     public void settlement() {
-        log.info("task = {}",System.currentTimeMillis());
+        log.info("settlement = {}",System.currentTimeMillis());
         klinesService.settlement();
     }
 
     /**
+     * 3分钟执行一次
+     * 代理结算
+     */
+    @Scheduled(cron="0 0/3 * * * ?") //每分钟执行一次
+    public void agentSettlement() {
+        log.info("agentSettlement = {}",System.currentTimeMillis());
+        klinesService.agentSettlement();
+    }
+
+    /**
      * 5分钟执行一次
+     * 当前期号刷新
      */
     @Scheduled(cron="0 0/5 * * * ?")
     public void currentIssueNoCacheRefresh() {

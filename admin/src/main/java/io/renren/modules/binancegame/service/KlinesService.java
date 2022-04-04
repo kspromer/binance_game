@@ -68,7 +68,10 @@ public interface KlinesService extends IService<KlinesEntity> {
      * 结算
      */
     void settlement();
-
+    /**
+     * 代理结算
+     */
+    void agentSettlement();
     /**
      * 刷新当前期号的缓存
      */

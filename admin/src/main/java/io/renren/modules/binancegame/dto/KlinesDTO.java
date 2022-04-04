@@ -2,6 +2,7 @@ package io.renren.modules.binancegame.dto;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -84,6 +85,9 @@ public class KlinesDTO extends PageParam implements Serializable {
 	public String getResult() {
 		if (StrUtil.isNotEmpty(result)) {
 			return result;
+		}
+		if (ObjectUtil.isNull(this.close)) {
+			return null;
 		}
 		int resultClose = this.close.multiply(BigDecimal.valueOf(100)).intValue();
 		int i1 = resultClose % 10;
