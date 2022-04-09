@@ -175,7 +175,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountDao, AccountEntity> i
         AccountTeamTotalInformationVO accountTeamTotalInformationVO1 = new AccountTeamTotalInformationVO();
         accountTeamTotalInformationVO1.setTitle(InviteRewardsCard.ONE.getValue());
         accountTeamTotalInformationVO1.setIcon(InviteRewardsCard.ONE.getIcon());
-        accountTeamTotalInformationVO1.setValue(totalCommission);
+        accountTeamTotalInformationVO1.setValue(ObjectUtil.isNull(totalCommission) ? BigDecimal.ZERO : totalCommission);
         ArrayList<AccountTeamTotalInformationVO> accountTeamTotalInformationVOS = CollUtil.newArrayList(accountTeamTotalInformationVO0, accountTeamTotalInformationVO1);
         return accountTeamTotalInformationVOS;
     }

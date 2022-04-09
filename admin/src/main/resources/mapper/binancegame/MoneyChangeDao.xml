@@ -22,7 +22,7 @@
             money_change
         WHERE
             account_id = #{accountId}
-          AND type = 3
+          AND type = 4
     </select>
 
 
