@@ -19,7 +19,7 @@ public enum MoneyChangeType implements BaseEnum {
     ONE(1,"审核拒绝"),
     TWO(2,"投注结算"),
     THREE(3,"投注"),
-    FOUR(3,"代理结算"),
+    FOUR(4,"代理结算"),
     ;
 
     @EnumValue

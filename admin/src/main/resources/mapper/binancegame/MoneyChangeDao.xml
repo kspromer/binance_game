@@ -15,5 +15,15 @@
         <result property="afterMoney" column="after_money"/>
     </resultMap>
 
+    <select id="totalCommission" resultType="java.math.BigDecimal">
+        SELECT
+            SUM( amount )
+        FROM
+            money_change
+        WHERE
+            account_id = #{accountId}
+          AND type = 3
+    </select>
+
 
 </mapper>

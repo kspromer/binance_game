@@ -2,8 +2,10 @@ package io.renren.modules.binancegame.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.renren.common.utils.PageUtils;
+import io.renren.modules.app.dto.AccountInviterListDTO;
 import io.renren.modules.app.dto.AppAccountLoginDTO;
 import io.renren.modules.app.dto.AppAccountRegisterDTO;
+import io.renren.modules.app.vo.AccountShareInformationVO;
 import io.renren.modules.binancegame.dto.AccountDTO;
 import io.renren.modules.binancegame.vo.AccountVO;
 import io.renren.modules.binancegame.entity.AccountEntity;
@@ -72,5 +74,25 @@ public interface AccountService extends IService<AccountEntity> {
      * @return
      */
     String login(AppAccountLoginDTO dto);
+
+    /**
+     * 获取分享信息
+     * @param accountId
+     * @return
+     */
+    AccountShareInformationVO shareInformation(Long accountId);
+    /**
+     * 查询团队的总信息
+     * @param accountId
+     * @return
+     */
+    Object teamTotalInformation(Long accountId);
+
+    /**
+     * 获取邀请人列表
+     * @param accountInviterListDTO
+     * @return
+     */
+    PageUtils inviterList(AccountInviterListDTO accountInviterListDTO);
 }
 

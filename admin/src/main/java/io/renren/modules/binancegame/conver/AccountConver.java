@@ -1,5 +1,6 @@
 package io.renren.modules.binancegame.conver;
 
+import io.renren.modules.app.vo.AccountInviterListVO;
 import io.renren.modules.app.vo.AppAccountVO;
 import io.renren.modules.binancegame.dto.AccountDTO;
 import io.renren.modules.binancegame.entity.AccountEntity;
@@ -31,4 +32,7 @@ public interface AccountConver {
 
     List<AppAccountVO> converAppAccountVO(List<AccountVO> accountVOS);
 
+    AccountInviterListVO converInviterList(AccountEntity accountEntities);
+
+    List<AccountInviterListVO> converInviterList(List<AccountEntity> accountEntities);
 }

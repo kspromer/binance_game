@@ -3,6 +3,8 @@ package io.renren.modules.binancegame.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import io.renren.datasources.annotation.BinanceGame;
+import io.renren.modules.app.dto.AccountRebateRecordDTO;
+import io.renren.modules.app.vo.AccountRebateRecordVO;
 import io.renren.modules.binancegame.entity.MessageEntity;
 import io.renren.modules.binancegame.enums.MessageType;
 import io.renren.modules.binancegame.enums.MoneyChangeType;
@@ -67,6 +69,23 @@ public class MoneyChangeServiceImpl extends ServiceImpl<MoneyChangeDao, MoneyCha
     @Override
     public boolean removeByIds(Collection<? extends Serializable> ids) {
         return super.removeByIds(ids);
+    }
+
+    @Override
+    public BigDecimal totalCommission(Long accountId) {
+        return baseMapper.totalCommission(accountId);
+    }
+
+    @Override
+    public Object rebateRecord(AccountRebateRecordDTO accountRebateRecordDTO) {
+        IPage<MoneyChangeEntity> page = baseMapper.selectPage(
+                new Query<MoneyChangeEntity>(accountRebateRecordDTO).getPage(),
+                new QueryWrapper<MoneyChangeEntity>().lambda()
+                        .eq(MoneyChangeEntity::getAccountId,accountRebateRecordDTO.getAccountId())
+                        .orderByDesc(MoneyChangeEntity::getId)
+                        .eq(MoneyChangeEntity::getType,MoneyChangeType.FOUR.getKey())
+        );
+        return PageUtils.<AccountRebateRecordVO>page(page).setList(MoneyChangeConver.MAPPER.converAccountRebateRecordVO(page.getRecords()));
     }
 
     /**

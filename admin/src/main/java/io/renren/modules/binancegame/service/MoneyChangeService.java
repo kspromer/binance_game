@@ -2,11 +2,13 @@ package io.renren.modules.binancegame.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.renren.common.utils.PageUtils;
+import io.renren.modules.app.dto.AccountRebateRecordDTO;
 import io.renren.modules.binancegame.dto.MoneyChangeDTO;
 import io.renren.modules.binancegame.vo.MoneyChangeVO;
 import io.renren.modules.binancegame.entity.MoneyChangeEntity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 
@@ -58,5 +60,19 @@ public interface MoneyChangeService extends IService<MoneyChangeEntity> {
      */
     @Override
     boolean removeByIds(Collection<? extends Serializable> ids);
+
+    /**
+     * 获取总分佣金额
+     * @param accountId
+     * @return
+     */
+    BigDecimal totalCommission(Long accountId);
+
+    /**
+     * 返利记录
+     * @param accountRebateRecordDTO
+     * @return
+     */
+    Object rebateRecord(AccountRebateRecordDTO accountRebateRecordDTO);
 }
 

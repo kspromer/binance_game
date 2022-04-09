@@ -156,24 +156,24 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     @Transactional(rollbackFor = Exception.class)
     public void rechargeTask() {
         //获取已经绑定地址的用户扫描
-        List<AccountRechargeAddressEntity> list = this.list(new QueryWrapper<AccountRechargeAddressEntity>().lambda()
-                .gt(AccountRechargeAddressEntity::getAccountId,0)
-        );
-
-        for (AccountRechargeAddressEntity one : list) {
-            ECKeyPair ecKeyPair = walletClient.createECKeyPair(one.getPrivateKey(), one.getWalletSerialNumber());
-            BscUsdt bscUsdt = BscUsdt.load(web3jConfig.getContractAddress(), web3j, Credentials.create(ecKeyPair), staticGasProvider);
-            try {
-                //当前的余额
-                BigInteger balanceOf = bscUsdt.balanceOf(one.getAddress()).send();
-                //如果余额相等直接跳出,说明没有充值
-                if (one.getBalanceOf().compareTo(balanceOf) == 0) {
-                    continue;
-                }
-            } catch (Exception e) {
-                log.error("e = {}",e);
-            }
-        }
+//        List<AccountRechargeAddressEntity> list = this.list(new QueryWrapper<AccountRechargeAddressEntity>().lambda()
+//                .gt(AccountRechargeAddressEntity::getAccountId,0)
+//        );
+//
+//        for (AccountRechargeAddressEntity one : list) {
+//            ECKeyPair ecKeyPair = walletClient.createECKeyPair(one.getPrivateKey(), one.getWalletSerialNumber());
+//            BscUsdt bscUsdt = BscUsdt.load(web3jConfig.getContractAddress(), web3j, Credentials.create(ecKeyPair), staticGasProvider);
+//            try {
+//                //当前的余额
+//                BigInteger balanceOf = bscUsdt.balanceOf(one.getAddress()).send();
+//                //如果余额相等直接跳出,说明没有充值
+//                if (one.getBalanceOf().compareTo(balanceOf) == 0) {
+//                    continue;
+//                }
+//            } catch (Exception e) {
+//                log.error("e = {}",e);
+//            }
+//        }
 
     }
 

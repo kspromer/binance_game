@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 
+ *
  *
  * @author liuyuchan
  * @email liuyuchan@qq.com
@@ -87,5 +87,9 @@ public class AccountEntity implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="余额")
 	private BigDecimal money;
-
+	/**
+	 * 邀请人路径
+	 */
+	@ApiModelProperty(required=false,value="邀请人路径")
+	private String upperPath;
 }

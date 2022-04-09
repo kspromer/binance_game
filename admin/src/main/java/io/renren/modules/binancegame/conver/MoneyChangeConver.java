@@ -1,5 +1,6 @@
 package io.renren.modules.binancegame.conver;
 
+import io.renren.modules.app.vo.AccountRebateRecordVO;
 import io.renren.modules.binancegame.dto.MoneyChangeDTO;
 import io.renren.modules.binancegame.entity.MoneyChangeEntity;
 import io.renren.modules.binancegame.vo.MoneyChangeVO;
@@ -25,5 +26,9 @@ public interface MoneyChangeConver {
     MoneyChangeVO conver(MoneyChangeEntity moneyChangeEntities);
 
     List<MoneyChangeVO> conver(List<MoneyChangeEntity> moneyChangeEntities);
+
+    AccountRebateRecordVO converAccountRebateRecordVO(MoneyChangeEntity moneyChangeEntities);
+
+    List<AccountRebateRecordVO> converAccountRebateRecordVO(List<MoneyChangeEntity> moneyChangeEntities);
 
 }
