@@ -48,7 +48,8 @@ public class AccountWithdrawalServiceImpl extends ServiceImpl<AccountWithdrawalD
     public PageUtils<AccountWithdrawalVO> queryPage(AccountWithdrawalDTO accountWithdrawal) {
         IPage<AccountWithdrawalEntity> page = baseMapper.selectPage(
                 new Query<AccountWithdrawalEntity>(accountWithdrawal).getPage(),
-                new QueryWrapper<AccountWithdrawalEntity>()
+                new QueryWrapper<AccountWithdrawalEntity>().lambda()
+                        .orderByDesc(AccountWithdrawalEntity::getId)
         );
 
         return PageUtils.<AccountWithdrawalVO>page(page).setList(AccountWithdrawalConver.MAPPER.conver(page.getRecords()));
@@ -118,7 +119,8 @@ public class AccountWithdrawalServiceImpl extends ServiceImpl<AccountWithdrawalD
 //        2.恢复当前用户余额
 //        3.修改用户余额
 //        给用户发送提现消息
-        Assert.isTrue(!accountWithdrawal.getStatus().equals(WithdrawalStatus.ZERO.getKey()),"当前状态不可以审核");
+        AccountWithdrawalVO accountWithdrawalVO = this.getById(accountWithdrawal.getId());
+        Assert.isTrue(!accountWithdrawalVO.getStatus().equals(WithdrawalStatus.ZERO.getKey()),"当前状态不可以审核");
         this.updateById(accountWithdrawal);
         Long accountId = accountWithdrawal.getAccountId();
         //用户

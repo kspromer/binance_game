@@ -186,6 +186,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountDao, AccountEntity> i
                 new Query<AccountEntity>(accountInviterListDTO).getPage(),
                 new QueryWrapper<AccountEntity>().lambda()
                         .like(AccountEntity::getUpperPath,accountInviterListDTO.getAccountId())
+                        .like(StrUtil.isNotEmpty(accountInviterListDTO.getUsername()),AccountEntity::getUsername,accountInviterListDTO.getUsername())
                         .orderByDesc(AccountEntity::getId)
         );
         return PageUtils.<AccountInviterListVO>page(page).setList(AccountConver.MAPPER.converInviterList(page.getRecords()));

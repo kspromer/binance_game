@@ -15,20 +15,22 @@ import lombok.Getter;
 @Getter
 public enum MoneyChangeType implements BaseEnum {
 
-    ZERO(0,"发起提现"),
-    ONE(1,"审核拒绝"),
-    TWO(2,"投注结算"),
-    THREE(3,"投注"),
-    FOUR(4,"代理结算"),
+    ZERO(0,"发起提现","withdrawal"),
+    ONE(1,"审核拒绝","Audit failure"),
+    TWO(2,"投注结算","Betting settlement"),
+    THREE(3,"投注","betting"),
+    FOUR(4,"代理结算","Clearing agent"),
     ;
 
     @EnumValue
     @JsonValue
     private Integer key;
     private String value;
+    private String englishvalue;
 
-    MoneyChangeType(Integer key, String value) {
+    MoneyChangeType(Integer key, String value,String englishvalue) {
         this.key = key;
         this.value = value;
+        this.englishvalue = englishvalue;
     }
 }

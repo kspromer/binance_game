@@ -29,6 +29,7 @@ import io.renren.modules.binancegame.conver.MoneyChangeConver;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 
 
 @Service("moneyChangeService")
@@ -78,12 +79,28 @@ public class MoneyChangeServiceImpl extends ServiceImpl<MoneyChangeDao, MoneyCha
 
     @Override
     public Object rebateRecord(AccountRebateRecordDTO accountRebateRecordDTO) {
+        Date startTime = null;
+        Date endTime = null;
+        if (ObjectUtil.isNotNull(accountRebateRecordDTO.getType())) {
+            if (accountRebateRecordDTO.getType() == 1) {
+                startTime = DateUtil.beginOfDay(DateUtil.offsetDay(DateUtil.date(),-1));
+                endTime = DateUtil.endOfDay(DateUtil.offsetDay(DateUtil.date(),-1));
+            }else if (accountRebateRecordDTO.getType() == 2) {
+                startTime = DateUtil.beginOfWeek(DateUtil.date());
+                endTime = DateUtil.endOfWeek(DateUtil.date());
+            }else if (accountRebateRecordDTO.getType() == 3) {
+                startTime = DateUtil.beginOfMonth(DateUtil.date());
+                endTime = DateUtil.endOfMonth(DateUtil.date());
+            }
+        }
         IPage<MoneyChangeEntity> page = baseMapper.selectPage(
                 new Query<MoneyChangeEntity>(accountRebateRecordDTO).getPage(),
                 new QueryWrapper<MoneyChangeEntity>().lambda()
                         .eq(MoneyChangeEntity::getAccountId,accountRebateRecordDTO.getAccountId())
                         .orderByDesc(MoneyChangeEntity::getId)
                         .eq(MoneyChangeEntity::getType,MoneyChangeType.FOUR.getKey())
+                        .ge(ObjectUtil.isNotNull(startTime),MoneyChangeEntity::getCreateTime,startTime)
+                        .le(ObjectUtil.isNotNull(endTime),MoneyChangeEntity::getCreateTime,endTime)
         );
         return PageUtils.<AccountRebateRecordVO>page(page).setList(MoneyChangeConver.MAPPER.converAccountRebateRecordVO(page.getRecords()));
     }
@@ -111,7 +128,7 @@ public class MoneyChangeServiceImpl extends ServiceImpl<MoneyChangeDao, MoneyCha
             MoneyChangeEntity moneyChangeEntity = new MoneyChangeEntity();
             moneyChangeEntity.setCreateTime(DateUtil.date());
             moneyChangeEntity.setType(moneyChangeType.getKey());
-            moneyChangeEntity.setDescription(moneyChangeType.getValue());
+            moneyChangeEntity.setDescription(moneyChangeType.getEnglishvalue());
             moneyChangeEntity.setAmount(money);
             moneyChangeEntity.setAccountId(accountId);
             moneyChangeEntity.setBeforeMoney(before);

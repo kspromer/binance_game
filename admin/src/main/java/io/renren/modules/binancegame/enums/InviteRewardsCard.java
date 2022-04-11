@@ -12,8 +12,8 @@ import lombok.Getter;
  */
 @Getter
 public enum InviteRewardsCard implements BaseEnum {
-    ZERO(1,"邀请人数","binance_game_app_assets/images/home_assets_invite_rewards_numbers_icon.png.png"),
-    ONE(2,"我的返利(USDT)","binance_game_app_assets/images/home_assets_invite_rewards_rebate_icon.png"),
+    ZERO(1,"Invite the number","binance_game_app_assets/images/home_assets_invite_rewards_numbers_icon.png.png"),
+    ONE(2,"My rebate(USDT)","binance_game_app_assets/images/home_assets_invite_rewards_rebate_icon.png"),
     ;
 
     @EnumValue

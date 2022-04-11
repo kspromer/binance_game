@@ -18,4 +18,9 @@ public class AccountRebateRecordDTO extends PageParam {
      */
     @ApiModelProperty(required=false,value="玩家id")
     private Long accountId;
+    /**
+     * 类型
+     */
+    @ApiModelProperty(required=false,value="类型")
+    private Integer type;
 }

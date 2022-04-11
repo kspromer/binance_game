@@ -1,5 +1,6 @@
 package io.renren.modules.app.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.renren.common.utils.R;
 import io.renren.modules.app.annotation.Login;
@@ -43,7 +44,7 @@ public class AppAccountAddressController extends AbstractController {
     public R list(AppAccountAddressListDto accountAddress){
         List<AccountAddressEntity> list = accountAddressService.list(new QueryWrapper<AccountAddressEntity>().lambda()
                 .eq(AccountAddressEntity::getAccountId,getAccountId())
-                .eq(AccountAddressEntity::getCoinType,accountAddress.getCoinType())
+                .eq(StrUtil.isNotEmpty(accountAddress.getCoinType()),AccountAddressEntity::getCoinType,accountAddress.getCoinType())
         );
         return R.data(list);
     }

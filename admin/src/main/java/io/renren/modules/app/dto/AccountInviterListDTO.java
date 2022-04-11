@@ -18,5 +18,10 @@ public class AccountInviterListDTO extends PageParam {
      */
     @ApiModelProperty(required=false,value="玩家id")
     private Long accountId;
+    /**
+     * 用户名
+     */
+    @ApiModelProperty(required=false,value="用户名")
+    private String username;
 }
 
