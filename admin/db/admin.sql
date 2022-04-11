@@ -11,7 +11,7 @@
  Target Server Version : 80016
  File Encoding         : 65001
 
- Date: 04/04/2022 23:26:39
+ Date: 11/04/2022 18:49:33
 */
 
 SET NAMES utf8mb4;
@@ -262,7 +262,7 @@ CREATE TABLE `sys_user_token` (
 -- Records of sys_user_token
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_token` VALUES (1, 'fd1cfaa49b8582a38a818dfdd07b6d3b', '2022-04-05 06:18:11', '2022-04-04 18:18:11');
+INSERT INTO `sys_user_token` VALUES (1, 'e9fb30d9e9ecbccb41def208368991f4', '2022-04-12 02:11:04', '2022-04-11 14:11:04');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
