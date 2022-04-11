@@ -76,4 +76,14 @@ CREATE TABLE `agent_commission` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='分佣配置';
 
 
+CREATE TABLE `account_translation` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `account_id` bigint(20) NOT NULL COMMENT '玩家id',
+  `to_account_id` bigint(20) NOT NULL COMMENT '转账玩家id',
+  `to_username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '用户名',
+  `money` decimal(20,8) unsigned NOT NULL DEFAULT '0.00000000' COMMENT '提现金额',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户转账';
 

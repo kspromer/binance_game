@@ -18,6 +18,7 @@ public enum MessageType implements BaseEnum {
     ZERO(0,"发起提现","Withdrawal","Your withdrawal has been initiated,Your withdrawal has been initiated, pending administrator review"),
     ONE(1,"审核通过","Withdrawal success","Your withdrawal was successful"),
     TWO(2,"审核失败","Withdrawal failure","Your withdrawal was not approved"),
+    THREE(3,"转账","Transfer","Your transfer was successful"),
     ;
 
     @EnumValue

@@ -44,9 +44,9 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
             if(StringUtils.isBlank(token)){
                 token = request.getParameter(jwtUtils.getHeader());
             }
-            Assert.isTrue(StringUtils.isBlank(token),jwtUtils.getHeader() + "不能为空");
+            Assert.isTrue(StringUtils.isBlank(token),jwtUtils.getHeader() + "Can't be empty");
             Claims claims = jwtUtils.getClaimByToken(token);
-            Assert.isTrue(claims == null || jwtUtils.isTokenExpired(claims.getExpiration()),jwtUtils.getHeader() + "失效，请重新登录");
+            Assert.isTrue(claims == null || jwtUtils.isTokenExpired(claims.getExpiration()),jwtUtils.getHeader() + "Invalid. Please log in again");
             request.setAttribute(ACCOUNT_ID, claims.getSubject());
         }
         return true;
