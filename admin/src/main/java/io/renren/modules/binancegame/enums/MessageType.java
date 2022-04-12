@@ -20,6 +20,7 @@ public enum MessageType implements BaseEnum {
     TWO(2,"审核失败","Withdrawal failure","Your withdrawal was not approved"),
     THREE(3,"转账","Transfer","Your transfer was successful"),
     FOUR(4,"管理员充值","Administrator recharge","The administrator is successfully charged."),
+    FIVE(5,"充值","recharge","Your recharge is complete"),
     ;
 
     @EnumValue

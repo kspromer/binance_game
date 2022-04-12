@@ -1,5 +1,6 @@
 package io.renren.modules.binancegame.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,7 +11,14 @@ import io.renren.datasources.annotation.BinanceGame;
 import io.renren.modules.app.dto.AccountRechargeAddressGetAddressDto;
 import io.renren.modules.app.vo.AccountRechargeAddressGetAddressVO;
 import io.renren.modules.binancegame.enums.CoinType;
+import io.renren.modules.binancegame.enums.MessageType;
+import io.renren.modules.binancegame.enums.MoneyChangeType;
+import io.renren.modules.binancegame.event.MoneyChangeMessageEvent;
+import io.renren.modules.binancegame.service.AccountService;
+import io.renren.modules.binancegame.vo.AccountVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -29,8 +37,10 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.gas.StaticGasProvider;
+import org.web3j.utils.Convert;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +50,7 @@ import java.util.stream.Collectors;
 
 @Service("accountRechargeAddressService")
 @BinanceGame
+@Slf4j
 public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechargeAddressDao, AccountRechargeAddressEntity> implements AccountRechargeAddressService {
 
     @Autowired
@@ -50,7 +61,12 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     private Web3jConfig web3jConfig;
 
     @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
     private StaticGasProvider staticGasProvider;
+    @Autowired
+    private AccountService accountService;
 
     @Override
     public PageUtils<AccountRechargeAddressVO> queryPage(AccountRechargeAddressDTO accountRechargeAddress) {
@@ -156,25 +172,53 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void rechargeTask() {
+        DateTime dateTime = DateUtil.offsetMinute(DateUtil.date(), -5);
         //获取已经绑定地址的用户扫描
-//        List<AccountRechargeAddressEntity> list = this.list(new QueryWrapper<AccountRechargeAddressEntity>().lambda()
-//                .gt(AccountRechargeAddressEntity::getAccountId,0)
-//        );
-//
-//        for (AccountRechargeAddressEntity one : list) {
-//            ECKeyPair ecKeyPair = walletClient.createECKeyPair(one.getPrivateKey(), one.getWalletSerialNumber());
-//            BscUsdt bscUsdt = BscUsdt.load(web3jConfig.getContractAddress(), web3j, Credentials.create(ecKeyPair), staticGasProvider);
-//            try {
-//                //当前的余额
-//                BigInteger balanceOf = bscUsdt.balanceOf(one.getAddress()).send();
-//                //如果余额相等直接跳出,说明没有充值
-//                if (one.getBalanceOf().compareTo(balanceOf) == 0) {
-//                    continue;
-//                }
-//            } catch (Exception e) {
-//                log.error("e = {}",e);
-//            }
-//        }
+        List<AccountRechargeAddressEntity> list = this.list(new QueryWrapper<AccountRechargeAddressEntity>().lambda()
+                .gt(AccountRechargeAddressEntity::getAccountId,0)
+                .gt(AccountRechargeAddressEntity::getCreateTime,dateTime)
+        );
+        log.info("AccountRechargeAddressEntity = {}",list.size());
+        for (AccountRechargeAddressEntity one : list) {
+            //BEP20充值
+            if (CoinType.ZERO.getValue().equals(one.getCoinType())) {
+                ECKeyPair ecKeyPair = walletClient.createECKeyPair(one.getPrivateKey(), one.getWalletSerialNumber());
+                BscUsdt bscUsdt = BscUsdt.load(web3jConfig.getContractAddress(), web3j, Credentials.create(ecKeyPair), staticGasProvider);
+                try {
+                    //当前的余额
+                    BigInteger balanceOf = bscUsdt.balanceOf(one.getAddress()).send();
+                    //如果余额相等直接跳出,说明没有充值
+                    if (one.getBalanceOf().compareTo(balanceOf) == 0) {
+                        continue;
+                    }
+                    //当前余额
+                    BigDecimal currentBalanceOf = Convert.fromWei(balanceOf.toString(), Convert.Unit.ETHER);
+                    //之前余额
+                    BigDecimal beforeBalanceOf = Convert.fromWei(one.getBalanceOf().toString(), Convert.Unit.ETHER);
+                    if (currentBalanceOf.doubleValue() < beforeBalanceOf.doubleValue()) {
+                        continue;
+                    }
+                    AccountVO accountVO = accountService.getById(one.getAccountId());
+                    if (ObjectUtil.isNull(accountVO)) {
+                        continue;
+                    }
+                    //充值的金额
+                    BigDecimal money = currentBalanceOf.subtract(beforeBalanceOf);
+
+                    MoneyChangeMessageEvent moneyChangeMessageEvent = new MoneyChangeMessageEvent(this);
+                    moneyChangeMessageEvent.setAccountId(one.getAccountId());
+                    moneyChangeMessageEvent.setMoney(money);
+                    moneyChangeMessageEvent.setMessageType(MessageType.FIVE);
+                    moneyChangeMessageEvent.setMoneyChangeType(MoneyChangeType.SEVEN);
+                    moneyChangeMessageEvent.setAccountVO(accountVO);
+                    eventPublisher.publishEvent(moneyChangeMessageEvent);
+                    one.setBalanceOf(balanceOf);
+                    this.updateById(one);
+                } catch (Exception e) {
+                    log.error("e = {}",e);
+                }
+            }
+        }
 
     }
 
