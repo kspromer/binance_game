@@ -61,6 +61,56 @@
 	</properties>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/io.grpc/grpc-protobuf -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty-shaded</artifactId>
+			<version>1.31.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty</artifactId>
+			<version>1.31.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>1.31.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-stub</artifactId>
+			<version>1.31.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tron.trident</groupId>
+			<artifactId>abi</artifactId>
+			<version>0.3.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/libs/abi-0.3.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.tron.trident</groupId>
+			<artifactId>utils</artifactId>
+			<version>0.3.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/libs/utils-0.3.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.tron.trident</groupId>
+			<artifactId>core</artifactId>
+			<version>0.3.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/libs/core-0.3.0.jar</systemPath>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.typesafe/config -->
 		<dependency>
 			<groupId>com.typesafe</groupId>

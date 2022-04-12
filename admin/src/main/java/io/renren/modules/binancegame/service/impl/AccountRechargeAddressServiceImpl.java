@@ -33,6 +33,7 @@ import io.renren.modules.binancegame.vo.AccountRechargeAddressVO;
 import io.renren.modules.binancegame.service.AccountRechargeAddressService;
 import io.renren.modules.binancegame.conver.AccountRechargeAddressConver;
 import org.springframework.transaction.annotation.Transactional;
+import org.tron.trident.core.contract.Trc20Contract;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
@@ -59,14 +60,14 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     private Web3j web3j;
     @Autowired
     private Web3jConfig web3jConfig;
-
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-
     @Autowired
     private StaticGasProvider staticGasProvider;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private Trc20Contract token;
 
     @Override
     public PageUtils<AccountRechargeAddressVO> queryPage(AccountRechargeAddressDTO accountRechargeAddress) {
@@ -132,6 +133,7 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     public List<AccountRechargeAddressGetAddressVO> getAddress(AccountRechargeAddressGetAddressDto dto) {
         List<AccountRechargeAddressGetAddressVO> accountRechargeAddressGetAddressVOS = new ArrayList<>();
         CoinType[] values = CoinType.values();
+        //获取所有的链
         for (CoinType value : values) {
             AccountRechargeAddressEntity one = this.getOne(new QueryWrapper<AccountRechargeAddressEntity>().lambda()
                     .eq(AccountRechargeAddressEntity::getAccountId,dto.getAccountId())
@@ -145,7 +147,7 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
                         .last("limit 1")
                 );
             }
-            if (ObjectUtil.isNotNull(one)) {
+            if (ObjectUtil.isNotNull(one) && CoinType.ZERO.getValue().equals(value.getValue())) {
                 ECKeyPair ecKeyPair = walletClient.createECKeyPair(one.getPrivateKey(), one.getWalletSerialNumber());
                 BscUsdt bscUsdt = BscUsdt.load(web3jConfig.getContractAddress(), web3j, Credentials.create(ecKeyPair), staticGasProvider);
                 try {
@@ -154,6 +156,16 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
                 } catch (Exception e) {
                     log.error("e = {}",e);
                 }
+                one.setAccountId(dto.getAccountId());
+                one.setCreateTime(DateUtil.date());
+                this.updateById(one);
+                AccountRechargeAddressGetAddressVO vo = new AccountRechargeAddressGetAddressVO();
+                vo.setAddress(one.getAddress());
+                vo.setCoinType(one.getCoinType());
+                accountRechargeAddressGetAddressVOS.add(vo);
+            }else if (ObjectUtil.isNotNull(one) && CoinType.ONE.getValue().equals(value.getValue())) {
+                BigInteger balanceOf = token.balanceOf(one.getAddress());
+                one.setBalanceOf(balanceOf);
                 one.setAccountId(dto.getAccountId());
                 one.setCreateTime(DateUtil.date());
                 this.updateById(one);
@@ -172,7 +184,7 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void rechargeTask() {
-        DateTime dateTime = DateUtil.offsetMinute(DateUtil.date(), -5);
+        DateTime dateTime = DateUtil.offsetMinute(DateUtil.date(), -10);
         //获取已经绑定地址的用户扫描
         List<AccountRechargeAddressEntity> list = this.list(new QueryWrapper<AccountRechargeAddressEntity>().lambda()
                 .gt(AccountRechargeAddressEntity::getAccountId,0)
@@ -195,6 +207,40 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
                     BigDecimal currentBalanceOf = Convert.fromWei(balanceOf.toString(), Convert.Unit.ETHER);
                     //之前余额
                     BigDecimal beforeBalanceOf = Convert.fromWei(one.getBalanceOf().toString(), Convert.Unit.ETHER);
+                    if (currentBalanceOf.doubleValue() < beforeBalanceOf.doubleValue()) {
+                        continue;
+                    }
+                    AccountVO accountVO = accountService.getById(one.getAccountId());
+                    if (ObjectUtil.isNull(accountVO)) {
+                        continue;
+                    }
+                    //充值的金额
+                    BigDecimal money = currentBalanceOf.subtract(beforeBalanceOf);
+
+                    MoneyChangeMessageEvent moneyChangeMessageEvent = new MoneyChangeMessageEvent(this);
+                    moneyChangeMessageEvent.setAccountId(one.getAccountId());
+                    moneyChangeMessageEvent.setMoney(money);
+                    moneyChangeMessageEvent.setMessageType(MessageType.FIVE);
+                    moneyChangeMessageEvent.setMoneyChangeType(MoneyChangeType.SEVEN);
+                    moneyChangeMessageEvent.setAccountVO(accountVO);
+                    eventPublisher.publishEvent(moneyChangeMessageEvent);
+                    one.setBalanceOf(balanceOf);
+                    this.updateById(one);
+                } catch (Exception e) {
+                    log.error("e = {}",e);
+                }
+            }else if (CoinType.ONE.getValue().equals(one.getCoinType())) {
+                try {
+                    //当前的余额
+                    BigInteger balanceOf = token.balanceOf(one.getAddress());
+                    //如果余额相等直接跳出,说明没有充值
+                    if (one.getBalanceOf().compareTo(balanceOf) == 0) {
+                        continue;
+                    }
+                    //当前余额
+                    BigDecimal currentBalanceOf = Convert.fromWei(balanceOf.toString(), Convert.Unit.MWEI);
+                    //之前余额
+                    BigDecimal beforeBalanceOf = Convert.fromWei(one.getBalanceOf().toString(), Convert.Unit.MWEI);
                     if (currentBalanceOf.doubleValue() < beforeBalanceOf.doubleValue()) {
                         continue;
                     }
