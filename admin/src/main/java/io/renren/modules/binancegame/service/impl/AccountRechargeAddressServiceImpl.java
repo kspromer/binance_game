@@ -56,7 +56,8 @@ public class AccountRechargeAddressServiceImpl extends ServiceImpl<AccountRechar
     public PageUtils<AccountRechargeAddressVO> queryPage(AccountRechargeAddressDTO accountRechargeAddress) {
         IPage<AccountRechargeAddressEntity> page = baseMapper.selectPage(
                 new Query<AccountRechargeAddressEntity>(accountRechargeAddress).getPage(),
-                new QueryWrapper<AccountRechargeAddressEntity>()
+                new QueryWrapper<AccountRechargeAddressEntity>().lambda()
+                        .eq(ObjectUtil.isNotNull(accountRechargeAddress.getAccountId()),AccountRechargeAddressEntity::getAccountId,accountRechargeAddress.getAccountId())
         );
 
         return PageUtils.<AccountRechargeAddressVO>page(page).setList(AccountRechargeAddressConver.MAPPER.conver(page.getRecords()));

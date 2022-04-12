@@ -1,23 +1,23 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.id ? '加分' : '加分'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
 
-    <el-form-item label="用户名" prop="username">
-      <el-input v-model="dataForm.username" placeholder="用户名"></el-input>
-    </el-form-item>
-    <el-form-item label="密码" prop="password">
-      <el-input v-model="dataForm.password" placeholder="密码"></el-input>
-    </el-form-item>
+<!--    <el-form-item label="用户名" prop="username">-->
+<!--      <el-input v-model="dataForm.username" placeholder="用户名"></el-input>-->
+<!--    </el-form-item>-->
+<!--    <el-form-item label="密码" prop="password">-->
+<!--      <el-input v-model="dataForm.password" placeholder="密码"></el-input>-->
+<!--    </el-form-item>-->
 
-    <el-form-item label="邀请码" prop="inviteCode">
-      <el-input v-model="dataForm.inviteCode" placeholder="邀请码"></el-input>
-    </el-form-item>
+<!--    <el-form-item label="邀请码" prop="inviteCode">-->
+<!--      <el-input v-model="dataForm.inviteCode" placeholder="邀请码"></el-input>-->
+<!--    </el-form-item>-->
 
-    <el-form-item label="余额" prop="money">
-      <el-input v-model="dataForm.money" placeholder="余额"></el-input>
+    <el-form-item label="余额" prop="addMoney">
+      <el-input v-model="dataForm.addMoney" placeholder="余额"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -44,7 +44,8 @@
           roleName: '',
           inviteCode: '',
           upper: '',
-          money: ''
+          money: '',
+          addMoney: '',
         },
         dataRule: {
           device: [
@@ -117,21 +118,11 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/binancegame/account/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/binancegame/account/${!this.dataForm.id ? 'addMoney' : 'addMoney'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'device': this.dataForm.device,
-                'createTime': this.dataForm.createTime,
-                'lastLoginTime': this.dataForm.lastLoginTime,
-                'username': this.dataForm.username,
-                'password': this.dataForm.password,
-                'phone': this.dataForm.phone,
-                'salt': this.dataForm.salt,
-                'roleName': this.dataForm.roleName,
-                'inviteCode': this.dataForm.inviteCode,
-                'upper': this.dataForm.upper,
-                'money': this.dataForm.money
+                'addMoney': this.dataForm.addMoney
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

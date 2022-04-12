@@ -2,12 +2,12 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.accountId" placeholder="accountId" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('binancegame:betrecord:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('binancegame:betrecord:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+<!--        <el-button v-if="isAuth('binancegame:betrecord:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
+<!--        <el-button v-if="isAuth('binancegame:betrecord:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
     <el-table
@@ -26,25 +26,7 @@
         prop="id"
         header-align="center"
         align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="accountId"
-        header-align="center"
-        align="center"
-        label="玩家id">
-      </el-table-column>
-      <el-table-column
-        prop="money"
-        header-align="center"
-        align="center"
-        label="金额">
-      </el-table-column>
-      <el-table-column
-        prop="point"
-        header-align="center"
-        align="center"
-        label="点数">
+        label="id">
       </el-table-column>
       <el-table-column
         prop="issueNo"
@@ -53,22 +35,34 @@
         label="期号">
       </el-table-column>
       <el-table-column
+        prop="accountId"
+        header-align="center"
+        align="center"
+        label="玩家id">
+      </el-table-column>
+      <el-table-column
+        prop="point"
+        header-align="center"
+        align="center"
+        label="点数">
+      </el-table-column>
+      <el-table-column
+        prop="money"
+        header-align="center"
+        align="center"
+        label="金额">
+      </el-table-column>
+      <el-table-column
         prop="result"
         header-align="center"
         align="center"
         label="结果">
       </el-table-column>
       <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
         prop="state"
         header-align="center"
         align="center"
-        label="状态0->投注未结算1->投注已结算">
+        label="状态">
       </el-table-column>
       <el-table-column
         prop="symbol"
@@ -83,16 +77,22 @@
         label="赔率">
       </el-table-column>
       <el-table-column
-        fixed="right"
+        prop="createTime"
         header-align="center"
         align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
-        </template>
+        label="创建时间">
       </el-table-column>
+<!--      <el-table-column-->
+<!--        fixed="right"-->
+<!--        header-align="center"-->
+<!--        align="center"-->
+<!--        width="150"-->
+<!--        label="操作">-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>-->
+<!--          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -114,7 +114,7 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          accountId: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -141,7 +141,7 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            'accountId': this.dataForm.accountId
           })
         }).then(({data}) => {
           if (data && data.code === 0) {

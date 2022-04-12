@@ -2,6 +2,7 @@ package io.renren.modules.binancegame.controller;
 
 import java.util.Arrays;
 
+import io.renren.modules.binancegame.dto.AccountAddMoneyDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,7 @@ import io.renren.common.utils.R;
 
 
 /**
- * 
+ *
  *
  * @author liuyuchan
  * @email liuyuchan@qq.com
@@ -59,8 +60,18 @@ public class AccountController {
     @RequestMapping("/save")
     @RequiresPermissions("binancegame:account:save")
     public R save(@RequestBody AccountDTO account){
-		accountService.save(account);
+        accountService.save(account);
 
+        return R.ok();
+    }
+
+    /**
+     * 加分
+     */
+    @RequestMapping("/addMoney")
+    @RequiresPermissions("binancegame:account:addMoney")
+    public R addMoney(@RequestBody AccountAddMoneyDTO account){
+        accountService.addMoney(account);
         return R.ok();
     }
 

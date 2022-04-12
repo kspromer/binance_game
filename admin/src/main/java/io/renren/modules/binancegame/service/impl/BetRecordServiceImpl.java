@@ -2,6 +2,7 @@ package io.renren.modules.binancegame.service.impl;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.binance.client.model.trade.Asset;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.BinanceGame;
@@ -64,7 +65,9 @@ public class BetRecordServiceImpl extends ServiceImpl<BetRecordDao, BetRecordEnt
     public PageUtils<BetRecordVO> queryPage(BetRecordDTO betRecord) {
         IPage<BetRecordEntity> page = baseMapper.selectPage(
                 new Query<BetRecordEntity>(betRecord).getPage(),
-                new QueryWrapper<BetRecordEntity>()
+                new QueryWrapper<BetRecordEntity>().lambda()
+                        .orderByDesc(BetRecordEntity::getId)
+                        .eq(ObjectUtil.isNotNull(betRecord.getAccountId()),BetRecordEntity::getAccountId,betRecord.getAccountId())
         );
 
         return PageUtils.<BetRecordVO>page(page).setList(BetRecordConver.MAPPER.conver(page.getRecords()));

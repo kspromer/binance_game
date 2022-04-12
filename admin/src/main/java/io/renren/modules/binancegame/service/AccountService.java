@@ -6,6 +6,7 @@ import io.renren.modules.app.dto.AccountInviterListDTO;
 import io.renren.modules.app.dto.AppAccountLoginDTO;
 import io.renren.modules.app.dto.AppAccountRegisterDTO;
 import io.renren.modules.app.vo.AccountShareInformationVO;
+import io.renren.modules.binancegame.dto.AccountAddMoneyDTO;
 import io.renren.modules.binancegame.dto.AccountDTO;
 import io.renren.modules.binancegame.vo.AccountVO;
 import io.renren.modules.binancegame.entity.AccountEntity;
@@ -94,5 +95,11 @@ public interface AccountService extends IService<AccountEntity> {
      * @return
      */
     PageUtils inviterList(AccountInviterListDTO accountInviterListDTO);
+
+    /**
+     * 后台加分
+     * @param account
+     */
+    void addMoney(AccountAddMoneyDTO account);
 }
 

@@ -35,7 +35,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, MessageEntity> i
     public PageUtils<MessageVO> queryPage(MessageDTO message) {
         IPage<MessageEntity> page = baseMapper.selectPage(
                 new Query<MessageEntity>(message).getPage(),
-                new QueryWrapper<MessageEntity>()
+                new QueryWrapper<MessageEntity>().lambda()
+                        .orderByDesc(MessageEntity::getId)
+                        .eq(ObjectUtil.isNotNull(message.getAccountId()),MessageEntity::getAccountId,message.getAccountId())
         );
 
         return PageUtils.<MessageVO>page(page).setList(MessageConver.MAPPER.conver(page.getRecords()));

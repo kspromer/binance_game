@@ -21,6 +21,7 @@ public enum MoneyChangeType implements BaseEnum {
     THREE(3,"投注","betting"),
     FOUR(4,"代理结算","Clearing agent"),
     FIVE(5,"转账","transfer"),
+    SIX(6,"管理员充值","Administrator recharge"),
     ;
 
     @EnumValue

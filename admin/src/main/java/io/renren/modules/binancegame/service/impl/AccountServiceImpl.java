@@ -21,9 +21,11 @@ import io.renren.modules.app.vo.AccountShareInformationVO;
 import io.renren.modules.app.vo.AccountTeamTotalInformationVO;
 import io.renren.modules.binancegame.conver.AccountConver;
 import io.renren.modules.binancegame.dao.AccountDao;
+import io.renren.modules.binancegame.dto.AccountAddMoneyDTO;
 import io.renren.modules.binancegame.dto.AccountDTO;
 import io.renren.modules.binancegame.entity.AccountEntity;
 import io.renren.modules.binancegame.enums.InviteRewardsCard;
+import io.renren.modules.binancegame.enums.MessageType;
 import io.renren.modules.binancegame.enums.MoneyChangeType;
 import io.renren.modules.binancegame.event.MoneyChangeMessageEvent;
 import io.renren.modules.binancegame.service.AccountCaptchaService;
@@ -31,6 +33,7 @@ import io.renren.modules.binancegame.service.AccountService;
 import io.renren.modules.binancegame.service.MoneyChangeService;
 import io.renren.modules.binancegame.vo.AccountVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -54,12 +57,16 @@ public class AccountServiceImpl extends ServiceImpl<AccountDao, AccountEntity> i
     private JwtUtils jwtUtils;
     @Autowired
     private MoneyChangeService moneyChangeService;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
 
     @Override
     public PageUtils<AccountVO> queryPage(AccountDTO account) {
         IPage<AccountEntity> page = baseMapper.selectPage(
                 new Query<AccountEntity>(account).getPage(),
-                new QueryWrapper<AccountEntity>()
+                new QueryWrapper<AccountEntity>().lambda()
+                        .like(StrUtil.isNotEmpty(account.getUsername()),AccountEntity::getUsername,account.getUsername())
         );
 
         return PageUtils.<AccountVO>page(page).setList(AccountConver.MAPPER.conver(page.getRecords()));
@@ -190,6 +197,20 @@ public class AccountServiceImpl extends ServiceImpl<AccountDao, AccountEntity> i
                         .orderByDesc(AccountEntity::getId)
         );
         return PageUtils.<AccountInviterListVO>page(page).setList(AccountConver.MAPPER.converInviterList(page.getRecords()));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addMoney(AccountAddMoneyDTO account) {
+        AccountVO accountVO = this.getById(account.getId());
+        Assert.isNull(accountVO,"Account does not exist.");
+        MoneyChangeMessageEvent moneyChangeMessageEvent = new MoneyChangeMessageEvent(this);
+        moneyChangeMessageEvent.setAccountId(account.getId());
+        moneyChangeMessageEvent.setMoney(account.getAddMoney());
+        moneyChangeMessageEvent.setMessageType(MessageType.FOUR);
+        moneyChangeMessageEvent.setMoneyChangeType(MoneyChangeType.SIX);
+        moneyChangeMessageEvent.setAccountVO(accountVO);
+        eventPublisher.publishEvent(moneyChangeMessageEvent);
     }
 
     /**

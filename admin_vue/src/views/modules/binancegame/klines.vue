@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('binancegame:klines:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('binancegame:klines:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+<!--        <el-button v-if="isAuth('binancegame:klines:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
+<!--        <el-button v-if="isAuth('binancegame:klines:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
     <el-table
@@ -26,7 +26,7 @@
         prop="issueNo"
         header-align="center"
         align="center"
-        label="期号：YYYYMMDDHHmm">
+        label="期号">
       </el-table-column>
       <el-table-column
         prop="symbol"
@@ -44,7 +44,7 @@
         prop="state"
         header-align="center"
         align="center"
-        label="状态：0->下注 1->结算 2->关闭">
+        label="状态">
       </el-table-column>
       <el-table-column
         prop="result"
@@ -64,23 +64,17 @@
         align="center"
         label="结束时间">
       </el-table-column>
-      <el-table-column
-        prop="id"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
+<!--      <el-table-column-->
+<!--        fixed="right"-->
+<!--        header-align="center"-->
+<!--        align="center"-->
+<!--        width="150"-->
+<!--        label="操作">-->
+<!--        <template slot-scope="scope">-->
+<!--&lt;!&ndash;          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>&ndash;&gt;-->
+<!--&lt;!&ndash;          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>&ndash;&gt;-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"

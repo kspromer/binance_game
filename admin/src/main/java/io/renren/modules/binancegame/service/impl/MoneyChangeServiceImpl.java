@@ -40,7 +40,9 @@ public class MoneyChangeServiceImpl extends ServiceImpl<MoneyChangeDao, MoneyCha
     public PageUtils<MoneyChangeVO> queryPage(MoneyChangeDTO moneyChange) {
         IPage<MoneyChangeEntity> page = baseMapper.selectPage(
                 new Query<MoneyChangeEntity>(moneyChange).getPage(),
-                new QueryWrapper<MoneyChangeEntity>()
+                new QueryWrapper<MoneyChangeEntity>().lambda()
+                        .orderByDesc(MoneyChangeEntity::getId)
+                        .eq(ObjectUtil.isNotNull(moneyChange.getAccountId()),MoneyChangeEntity::getAccountId,moneyChange.getAccountId())
         );
 
         return PageUtils.<MoneyChangeVO>page(page).setList(MoneyChangeConver.MAPPER.conver(page.getRecords()));

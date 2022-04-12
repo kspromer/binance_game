@@ -76,7 +76,7 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
     public PageUtils<KlinesVO> queryPage(KlinesDTO klines) {
         IPage<KlinesEntity> page = baseMapper.selectPage(
                 new Query<KlinesEntity>(klines).getPage(),
-                new QueryWrapper<KlinesEntity>()
+                new QueryWrapper<KlinesEntity>().lambda().orderByDesc(KlinesEntity::getId)
         );
 
         return PageUtils.<KlinesVO>page(page).setList(KlinesConver.MAPPER.conver(page.getRecords()));

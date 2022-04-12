@@ -5,7 +5,7 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
     <el-form-item label="点数" prop="point">
-      <el-input v-model="dataForm.point" placeholder="点数"></el-input>
+      <el-input v-model="dataForm.point" readonly placeholder="点数"></el-input>
     </el-form-item>
     <el-form-item label="赔率" prop="odds">
       <el-input v-model="dataForm.odds" placeholder="赔率"></el-input>
@@ -51,8 +51,8 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.point = data.betconfig.point
-                this.dataForm.odds = data.betconfig.odds
+                this.dataForm.point = data.betConfig.point
+                this.dataForm.odds = data.betConfig.odds
               }
             })
           }
