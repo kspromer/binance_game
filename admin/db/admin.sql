@@ -11,7 +11,7 @@
  Target Server Version : 80016
  File Encoding         : 65001
 
- Date: 11/04/2022 18:49:33
+ Date: 12/04/2022 18:36:26
 */
 
 SET NAMES utf8mb4;
@@ -112,7 +112,7 @@ CREATE TABLE `sys_menu` (
   `icon` varchar(50) DEFAULT NULL COMMENT '菜单图标',
   `order_num` int(11) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
 
 -- ----------------------------
 -- Records of sys_menu
@@ -147,31 +147,55 @@ INSERT INTO `sys_menu` VALUES (26, 4, '删除', NULL, 'sys:menu:delete', 2, NULL
 INSERT INTO `sys_menu` VALUES (27, 1, '参数管理', 'sys/config', 'sys:config:list,sys:config:info,sys:config:save,sys:config:update,sys:config:delete', 1, 'config', 6);
 INSERT INTO `sys_menu` VALUES (29, 1, '系统日志', 'sys/log', 'sys:log:list', 1, 'log', 7);
 INSERT INTO `sys_menu` VALUES (30, 1, '文件上传', 'oss/oss', 'sys:oss:all', 1, 'oss', 6);
-INSERT INTO `sys_menu` VALUES (36, 1, '用户', 'admin/user', NULL, 1, 'config', 6);
-INSERT INTO `sys_menu` VALUES (37, 36, '查看', NULL, 'admin:user:list,admin:user:info', 2, NULL, 6);
-INSERT INTO `sys_menu` VALUES (38, 36, '新增', NULL, 'admin:user:save', 2, NULL, 6);
-INSERT INTO `sys_menu` VALUES (39, 36, '修改', NULL, 'admin:user:update', 2, NULL, 6);
-INSERT INTO `sys_menu` VALUES (40, 36, '删除', NULL, 'admin:user:delete', 2, NULL, 6);
-INSERT INTO `sys_menu` VALUES (41, 1, '用户列表', 'binancegame/account', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (41, 62, '用户列表', 'binancegame/account', NULL, 1, 'config', 6);
 INSERT INTO `sys_menu` VALUES (42, 41, '查看', NULL, 'binancegame:account:list,binancegame:account:info', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (43, 41, '新增', NULL, 'binancegame:account:save', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (44, 41, '修改', NULL, 'binancegame:account:update', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (45, 41, '删除', NULL, 'binancegame:account:delete', 2, NULL, 6);
-INSERT INTO `sys_menu` VALUES (46, 1, '用户提现', 'binancegame/accountwithdrawal', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (46, 62, '用户提现', 'binancegame/accountwithdrawal', NULL, 1, 'config', 6);
 INSERT INTO `sys_menu` VALUES (47, 46, '查看', NULL, 'binancegame:accountwithdrawal:list,binancegame:accountwithdrawal:info', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (48, 46, '新增', NULL, 'binancegame:accountwithdrawal:save', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (49, 46, '修改', NULL, 'binancegame:accountwithdrawal:update', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (50, 46, '删除', NULL, 'binancegame:accountwithdrawal:delete', 2, NULL, 6);
-INSERT INTO `sys_menu` VALUES (51, 1, '用户充值地址', 'binancegame/accountrechargeaddress', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (51, 62, '用户充值地址', 'binancegame/accountrechargeaddress', NULL, 1, 'config', 6);
 INSERT INTO `sys_menu` VALUES (52, 51, '查看', NULL, 'binancegame:accountrechargeaddress:list,binancegame:accountrechargeaddress:info', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (53, 51, '新增', NULL, 'binancegame:accountrechargeaddress:save', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (54, 51, '修改', NULL, 'binancegame:accountrechargeaddress:update', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (55, 51, '删除', NULL, 'binancegame:accountrechargeaddress:delete', 2, NULL, 6);
-INSERT INTO `sys_menu` VALUES (56, 1, '分佣配置', 'binancegame/agentcommission', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (56, 63, '分佣配置', 'binancegame/agentcommission', NULL, 1, 'config', 6);
 INSERT INTO `sys_menu` VALUES (57, 56, '查看', NULL, 'binancegame:agentcommission:list,binancegame:agentcommission:info', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (58, 56, '新增', NULL, 'binancegame:agentcommission:save', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (59, 56, '修改', NULL, 'binancegame:agentcommission:update', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (60, 56, '删除', NULL, 'binancegame:agentcommission:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (61, 41, '加分', '', 'binancegame:account:addMoney', 2, '', 0);
+INSERT INTO `sys_menu` VALUES (62, 0, '用户管理', '', '', 0, 'admin', 0);
+INSERT INTO `sys_menu` VALUES (63, 0, '系统配置', '', '', 0, 'menu', 0);
+INSERT INTO `sys_menu` VALUES (64, 62, '金额变动', 'binancegame/moneychange', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (65, 64, '查看', NULL, 'binancegame:moneychange:list,binancegame:moneychange:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (66, 64, '新增', NULL, 'binancegame:moneychange:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (67, 64, '修改', NULL, 'binancegame:moneychange:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (68, 64, '删除', NULL, 'binancegame:moneychange:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (69, 62, '用户消息', 'binancegame/message', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (70, 69, '查看', NULL, 'binancegame:message:list,binancegame:message:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (71, 69, '新增', NULL, 'binancegame:message:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (72, 69, '修改', NULL, 'binancegame:message:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (73, 69, '删除', NULL, 'binancegame:message:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (74, 63, '投注配置', 'binancegame/betconfig', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (75, 74, '查看', NULL, 'binancegame:betconfig:list,binancegame:betconfig:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (76, 74, '新增', NULL, 'binancegame:betconfig:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (77, 74, '修改', NULL, 'binancegame:betconfig:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (78, 74, '删除', NULL, 'binancegame:betconfig:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (79, 84, '投注记录', 'binancegame/betrecord', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (80, 79, '查看', NULL, 'binancegame:betrecord:list,binancegame:betrecord:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (81, 79, '新增', NULL, 'binancegame:betrecord:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (82, 79, '修改', NULL, 'binancegame:betrecord:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (83, 79, '删除', NULL, 'binancegame:betrecord:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (84, 0, '投注管理', '', '', 0, 'zhedie', 0);
+INSERT INTO `sys_menu` VALUES (85, 84, 'k线', 'binancegame/klines', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (86, 85, '查看', NULL, 'binancegame:klines:list,binancegame:klines:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (87, 85, '新增', NULL, 'binancegame:klines:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (88, 85, '修改', NULL, 'binancegame:klines:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (89, 85, '删除', NULL, 'binancegame:klines:delete', 2, NULL, 6);
 COMMIT;
 
 -- ----------------------------
@@ -262,7 +286,7 @@ CREATE TABLE `sys_user_token` (
 -- Records of sys_user_token
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_token` VALUES (1, 'e9fb30d9e9ecbccb41def208368991f4', '2022-04-12 02:11:04', '2022-04-11 14:11:04');
+INSERT INTO `sys_user_token` VALUES (1, 'a80773117c6d063ff24c634b51bffc7e', '2022-04-13 02:41:37', '2022-04-12 14:41:37');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
