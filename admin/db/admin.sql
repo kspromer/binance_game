@@ -11,7 +11,7 @@
  Target Server Version : 80016
  File Encoding         : 65001
 
- Date: 12/04/2022 18:36:26
+ Date: 13/04/2022 22:55:17
 */
 
 SET NAMES utf8mb4;
@@ -112,7 +112,7 @@ CREATE TABLE `sys_menu` (
   `icon` varchar(50) DEFAULT NULL COMMENT '菜单图标',
   `order_num` int(11) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8 COMMENT='菜单管理';
 
 -- ----------------------------
 -- Records of sys_menu
@@ -196,6 +196,11 @@ INSERT INTO `sys_menu` VALUES (86, 85, '查看', NULL, 'binancegame:klines:list,
 INSERT INTO `sys_menu` VALUES (87, 85, '新增', NULL, 'binancegame:klines:save', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (88, 85, '修改', NULL, 'binancegame:klines:update', 2, NULL, 6);
 INSERT INTO `sys_menu` VALUES (89, 85, '删除', NULL, 'binancegame:klines:delete', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (90, 84, '免赔配置', 'binancegame/franchiseconfiguration', NULL, 1, 'config', 6);
+INSERT INTO `sys_menu` VALUES (91, 90, '查看', NULL, 'binancegame:franchiseconfiguration:list,binancegame:franchiseconfiguration:info', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (92, 90, '新增', NULL, 'binancegame:franchiseconfiguration:save', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (93, 90, '修改', NULL, 'binancegame:franchiseconfiguration:update', 2, NULL, 6);
+INSERT INTO `sys_menu` VALUES (94, 90, '删除', NULL, 'binancegame:franchiseconfiguration:delete', 2, NULL, 6);
 COMMIT;
 
 -- ----------------------------
@@ -286,7 +291,7 @@ CREATE TABLE `sys_user_token` (
 -- Records of sys_user_token
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_token` VALUES (1, 'a80773117c6d063ff24c634b51bffc7e', '2022-04-13 02:41:37', '2022-04-12 14:41:37');
+INSERT INTO `sys_user_token` VALUES (1, '7c254f4d9d4e0ec0e2b38bd835c18466', '2022-04-14 09:44:22', '2022-04-13 21:44:22');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
