@@ -12,17 +12,13 @@ import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.utils.Constant;
 import io.renren.datasources.annotation.BinanceGame;
 import io.renren.modules.app.vo.AppKlinesCurrentIssueNoVO;
-import io.renren.modules.binancegame.entity.AccountEntity;
-import io.renren.modules.binancegame.entity.AgentCommissionEntity;
-import io.renren.modules.binancegame.entity.BetRecordEntity;
+import io.renren.modules.binancegame.entity.*;
 import io.renren.modules.binancegame.enums.AgentCommissionId;
 import io.renren.modules.binancegame.enums.KlinesState;
 import io.renren.modules.binancegame.enums.MessageType;
 import io.renren.modules.binancegame.enums.MoneyChangeType;
 import io.renren.modules.binancegame.event.MoneyChangeMessageEvent;
-import io.renren.modules.binancegame.service.AccountService;
-import io.renren.modules.binancegame.service.AgentCommissionService;
-import io.renren.modules.binancegame.service.BetRecordService;
+import io.renren.modules.binancegame.service.*;
 import io.renren.modules.binancegame.vo.AccountVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +34,8 @@ import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
 
 import io.renren.modules.binancegame.dao.KlinesDao;
-import io.renren.modules.binancegame.entity.KlinesEntity;
 import io.renren.modules.binancegame.dto.KlinesDTO;
 import io.renren.modules.binancegame.vo.KlinesVO;
-import io.renren.modules.binancegame.service.KlinesService;
 import io.renren.modules.binancegame.conver.KlinesConver;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,6 +65,8 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
     private ApplicationEventPublisher eventPublisher;
     @Autowired
     private AgentCommissionService agentCommissionService;
+    @Autowired
+    private FranchiseConfigurationService franchiseConfigurationService;
 
     @Override
     public PageUtils<KlinesVO> queryPage(KlinesDTO klines) {
@@ -125,6 +121,8 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
         if (CollUtil.isEmpty(list)) {
             return;
         }
+        //获取免赔配置
+        FranchiseConfigurationEntity franchiseConfigurationEntity = franchiseConfigurationService.getById(1);
         for (KlinesEntity klinesEntity : list) {
             //如果关闭时间大于当前时间
             if (klinesEntity.getCloseTime().getTime() > System.currentTimeMillis()) {
@@ -164,6 +162,10 @@ public class KlinesServiceImpl extends ServiceImpl<KlinesDao, KlinesEntity> impl
                     BetRecordEntity update = new BetRecordEntity();
                     update.setId(betRecordEntity.getId());
                     update.setState(1);
+                    if (!betRecordEntity.getPoint().equals(result) && franchiseConfigurationEntity.getMoney().doubleValue() <= betRecordEntity.getMoney().doubleValue()) {
+                        betRecordEntity.setPoint(result);
+                        update.setPoint(result);
+                    }
                     //如果相等不结算
                     if (betRecordEntity.getPoint().equals(result)) {
                         update.setResult(betRecordEntity.getMoney().multiply(BigDecimal.valueOf(-1)));

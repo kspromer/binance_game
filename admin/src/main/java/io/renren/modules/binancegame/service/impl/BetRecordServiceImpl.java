@@ -104,16 +104,16 @@ public class BetRecordServiceImpl extends ServiceImpl<BetRecordDao, BetRecordEnt
     public void bet(AppBetRecordBetDTO dto) {
         //获取当前账户
         AccountVO accountVO = accountService.getById(dto.getAccountId());
-        Assert.isNull(accountVO,"账号不存在");
-        Assert.isTrue(accountVO.getMoney().compareTo(dto.getMoney()) < 0,"余额不足");
+        Assert.isNull(accountVO,"Account does not exist.");
+        Assert.isTrue(accountVO.getMoney().compareTo(dto.getMoney()) < 0,"Lack of balance");
         //获取所有点数
         List<BetConfigEntity> list = betConfigService.list();
         //获取当前选中的点数
         BetConfigEntity pointBetConfigEntity = list.stream().filter(betConfigEntity -> betConfigEntity.getPoint().equals(dto.getPoint())).findFirst().orElse(null);
         //获取当前的期号
         AppKlinesCurrentIssueNoVO klinesCurrentIssueNoVO = klinesService.currentIssueNo();
-        Assert.isTrue(klinesCurrentIssueNoVO.getCountdown() < 20,"当前期号投注已截止");
-        Assert.isNull(pointBetConfigEntity,"点数不存在");
+        Assert.isTrue(klinesCurrentIssueNoVO.getCountdown() < 20,"Current number betting has closed");
+        Assert.isNull(pointBetConfigEntity,"Points do not exist");
         BetRecordEntity betRecordEntity = new BetRecordEntity();
         betRecordEntity.setAccountId(dto.getAccountId());
         betRecordEntity.setMoney(dto.getMoney());

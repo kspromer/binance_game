@@ -17,7 +17,7 @@ public class RenrenApplicationTests {
 	@Test
 	public void contextLoads() {
 		sysGeneratorService.generatorCode(new String[]{
-				"account_translation",
+				"franchise_configuration",
 		});
 	}
 
